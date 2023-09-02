@@ -1,6 +1,6 @@
 # certbot-dns-aliyun
 
-本项目主要通过Certbot集成阿里云CLI来自动化颁发SSL证书，为了最小化运维门槛，所以依赖及脚本都被打包到docker镜像中。
+本项目主要通过Certbot集成阿里云CLI来一键创建、自动化更新SSL证书，为**域名解析部署在阿里云**的用户提供便利的证书生成和更新方式。为了最小化运维门槛，依赖及脚本都被打包到docker镜像中。
 
 ## 创建证书
 
@@ -23,4 +23,12 @@ docker run -it --rm --name certbot-dns-aliyun \
 ```
 
 ## 创建并授权ACCESS_KEY
+
+首先，参考[阿里云的创建AccessKey](https://help.aliyun.com/zh/ram/user-guide/create-an-accesskey-pair)，建议为该AccessKey创建单独的RAM用户以进行更精细的云解析授权管理。
+
+然后，为该用户授权，可以参考[授权RAM用户管理域名](https://help.aliyun.com/zh/dws/user-guide/authorize-a-ram-user-to-manage-domain-names)，注意，实际是授权RAM用户管理云解析，所以授权时选择`AliyunDNSFullAccess`而不是`AliyunDomainFullAccess`。
+
+通过以上两步，我们就可以使用该RAM用户的AccessKey，通过Aliyun CLI来访问云解析了。
+
+
 
