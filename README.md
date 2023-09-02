@@ -47,6 +47,12 @@ docker run -it --rm --name certbot-dns-aliyun \
 
 当然，更佳的办法是配置Crontab，这样服务器可以定期检查并续订。
 
+这是一个crontab的例子，其中需要提前配置环境变量`ALIYUN_CLI_ACCESS_KEY_ID`和`ALIYUN_CLI_ACCESS_KEY_SECRET`，可以将它们写入`/etc/environment`以防止服务器重启后丢失环境变量。
+```
+# 每5/15/25号3点执行certbot renew
+0 3 5,15,25 * * docker run -it --rm --name certbot-dns-aliyun -v "/etc/letsencrypt:/etc/letsencrypt" -v "/var/lib/letsencrypt:/var/lib/letsencrypt" -e ALIYUN_CLI_ACCESS_KEY_ID="${ALIYUN_CLI_ACCESS_KEY_ID}" -e ALIYUN_CLI_ACCESS_KEY_SECRET="${ALIYUN_CLI_ACCESS_KEY_SECRET}" aiyax/certbot-dns-aliyun renew --manual --preferred-challenges dns --manual-auth-hook 'aliyun-dns' --manual-cleanup-hook 'aliyun-dns clean' --non-interactive
+```
+
 ## 创建并授权ACCESS_KEY
 
 首先，参考[阿里云的创建AccessKey](https://help.aliyun.com/zh/ram/user-guide/create-an-accesskey-pair)，建议为该AccessKey创建单独的RAM用户以进行更精细的云解析授权管理。
