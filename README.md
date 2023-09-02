@@ -8,6 +8,7 @@
 - ALIYUN_CLI_ACCESS_KEY_ID，如何获取参考[创建并授权ACCESS_KEY](README.md#创建并授权ACCESS_KEY)
 - ALIYUN_CLI_ACCESS_KEY_SECRET，同上
 - CERT_DOMAIN，需要获取证书的域名，比如`aiyax.com`或者`*.aiyax.com`
+
 ```
 docker run -it --rm --name certbot-dns-aliyun \
             -v "/etc/letsencrypt:/etc/letsencrypt" \
@@ -21,6 +22,15 @@ docker run -it --rm --name certbot-dns-aliyun \
 	      --manual-auth-hook 'aliyun-dns' \
 	      --manual-clean-hook 'aliyun-dns clean'
 ```
+注意，生成完证书后，需要配置并部署到相应的web服务器。
+
+## 更新证书
+
+Documentation in progressing
+
+域名认证有效期是30天
+
+配置Crontab
 
 ## 创建并授权ACCESS_KEY
 
