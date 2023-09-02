@@ -27,11 +27,25 @@ docker run -it --rm --name certbot-dns-aliyun \
 
 ## 更新证书
 
-Documentation in progressing
+更新证书更加方便，因为Certbot会自动查找并续订已经存在的证书而无需指定域名。使用如下命令即可轻松检查并续订：
 
-域名认证有效期是30天
+```
+docker run -it --rm --name certbot-dns-aliyun \
+    -v "/etc/letsencrypt:/etc/letsencrypt" \
+    -v "/var/lib/letsencrypt:/var/lib/letsencrypt" \
+    -e ALIYUN_CLI_ACCESS_KEY_ID=<ALIYUN_CLI_ACCESS_KEY_ID> \
+    -e ALIYUN_CLI_ACCESS_KEY_SECRET=<ALIYUN_CLI_ACCESS_KEY_SECRET> \
+    aiyax/certbot-dns-aliyun renew \
+    --manual \
+    --preferred-challenges dns \
+    --manual-auth-hook 'aliyun-dns' \
+    --manual-cleanup-hook 'aliyun-dns clean' \
+    --non-interactive
+```
 
-配置Crontab
+同样的，需要重启web服务器才会使续订的证书生效。
+
+当然，更佳的办法是配置Crontab，这样服务器可以定期检查并续订。
 
 ## 创建并授权ACCESS_KEY
 
