@@ -20,7 +20,8 @@ docker run -it --rm --name certbot-dns-aliyun \
               --manual \
               --preferred-challenges dns \
 	      --manual-auth-hook 'aliyun-dns' \
-	      --manual-clean-hook 'aliyun-dns clean'
+	      --manual-clean-hook 'aliyun-dns clean' \
+              --non-interactive
 ```
 注意，生成完证书后，需要配置并部署到相应的web服务器。
 
