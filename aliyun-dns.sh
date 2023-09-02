@@ -1,10 +1,5 @@
 #!/bin/sh
 
-if ! command -v aliyun >/dev/null; then
-	echo "错误: 你需要先安装 aliyun 命令行工具 https://help.aliyun.com/document_detail/121541.html。" 1>&2
-	exit 1
-fi
-
 configure-aliyun-cli
 
 DOMAIN=$(expr match "$CERTBOT_DOMAIN" '.*\.\(.*\..*\)')
