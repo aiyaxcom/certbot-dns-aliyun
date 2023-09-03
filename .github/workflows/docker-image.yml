@@ -24,9 +24,9 @@ jobs:
       run: |
         echo "::set-output name=tag::$(echo ${GITHUB_REF#refs/tags/})"
         if [[ "${{ github.ref }}" == "refs/tags"* ]]; then
-          docker tag certbot-dns-aliyun:main aiyax/certbot-dns-aliyun:${{ steps.tag.outputs.tag }}
-          docker push aiyax/certbot-dns-aliyun:${{ steps.tag.outputs.tag }}
+          docker tag certbot-dns-aliyun:main ${{ secrets.DOCKERHUB_USERNAME }}/certbot-dns-aliyun:${{ steps.tag.outputs.tag }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/certbot-dns-aliyun:${{ steps.tag.outputs.tag }}
         else
           docker tag certbot-dns-aliyun:main aiyax/certbot-dns-aliyun:latest
-          docker push aiyax/certbot-dns-aliyun:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/certbot-dns-aliyun:latest
         fi
