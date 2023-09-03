@@ -23,7 +23,7 @@ docker run -it --rm --name certbot-dns-aliyun \
 	      --manual-clean-hook 'aliyun-dns clean' \
               --non-interactive
 ```
-注意，生成完证书后，需要配置并部署到相应的web服务器。
+注意，生成完证书后，需要将其配置并部署到相应的web服务器。
 
 ## 更新证书
 
@@ -53,6 +53,10 @@ docker run -it --rm --name certbot-dns-aliyun \
 # 每5/15/25号3点执行certbot renew，注意替换</path/to/deploy-hook.sh>
 0 3 5,15,25 * * docker run -it --rm --name certbot-dns-aliyun -v "/etc/letsencrypt:/etc/letsencrypt" -v "/var/lib/letsencrypt:/var/lib/letsencrypt" -e ALIYUN_CLI_ACCESS_KEY_ID="${ALIYUN_CLI_ACCESS_KEY_ID}" -e ALIYUN_CLI_ACCESS_KEY_SECRET="${ALIYUN_CLI_ACCESS_KEY_SECRET}" aiyax/certbot-dns-aliyun renew --manual --preferred-challenges dns --non-interactive | grep "Congratulations, all renewals succeeded" && </path/to/deploy-hook.sh>
 ```
+
+以上的Crontab中的`5,15,25`可以根据需求自行调整，有两点需要考虑：
+1. Let's encrypt证书只有达到一定时间才会renew，应该是最后30天。
+2. 过于频繁的renew会被限制。
 
 ## 创建并授权ACCESS_KEY
 
