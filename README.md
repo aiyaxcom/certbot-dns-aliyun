@@ -71,7 +71,7 @@ docker run -it --rm --name certbot-dns-aliyun \
 
 ## 常见问题
 
-- 支持群晖服务器
+- [支持群晖服务器](https://github.com/aiyaxcom/certbot-dns-aliyun/issues/1)
 
 ## 支持
 
