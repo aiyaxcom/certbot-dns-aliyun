@@ -33,7 +33,7 @@ docker run -it --rm --name certbot-dns-aliyun \
 更新证书更加方便，因为Certbot会自动查找并续订已经存在的证书而无需指定域名。使用如下命令即可轻松检查并续订：
 
 ```
-docker run -it --rm --name certbot-dns-aliyun \
+docker run --rm --name certbot-dns-aliyun \
     -v "/etc/letsencrypt:/etc/letsencrypt" \
     -v "/var/lib/letsencrypt:/var/lib/letsencrypt" \
     -e ALIYUN_CLI_ACCESS_KEY_ID=<ALIYUN_CLI_ACCESS_KEY_ID> \
@@ -50,11 +50,26 @@ docker run -it --rm --name certbot-dns-aliyun \
 
 当然，更佳的办法是配置Crontab，这样服务器可以定期检查并续订。
 
-这是一个crontab的例子，其中需要提前配置环境变量`ALIYUN_CLI_ACCESS_KEY_ID`和`ALIYUN_CLI_ACCESS_KEY_SECRET`，可以将它们写入`/etc/environment`以防止服务器重启后丢失环境变量。与此同时，我们需要使用一个deploy-hook.sh脚本来重启web服务以使证书被部署生效。
-**注意替换</path/to/deploy-hook.sh>**。
+推荐使用脚本文件来执行续期任务，这样可读性好且易于维护。将以下脚本保存为 `/path/to/certbot-renew.sh`：
+
+```bash
+#!/bin/bash
+docker run --rm --name certbot-dns-aliyun \
+  -v "/etc/letsencrypt:/etc/letsencrypt" \
+  -v "/var/lib/letsencrypt:/var/lib/letsencrypt" \
+  -e ALIYUN_CLI_ACCESS_KEY_ID="${ALIYUN_CLI_ACCESS_KEY_ID}" \
+  -e ALIYUN_CLI_ACCESS_KEY_SECRET="${ALIYUN_CLI_ACCESS_KEY_SECRET}" \
+  aiyax/certbot-dns-aliyun renew \
+  --manual --preferred-challenges dns \
+  --manual-auth-hook "aliyun-dns" \
+  --manual-cleanup-hook "aliyun-dns clean" \
+  --non-interactive
 ```
-# 每5/15/25号3点执行certbot renew，注意替换</path/to/deploy-hook.sh>
-0 3 5,15,25 * * docker run -it --rm --name certbot-dns-aliyun -v "/etc/letsencrypt:/etc/letsencrypt" -v "/var/lib/letsencrypt:/var/lib/letsencrypt" -e ALIYUN_CLI_ACCESS_KEY_ID="${ALIYUN_CLI_ACCESS_KEY_ID}" -e ALIYUN_CLI_ACCESS_KEY_SECRET="${ALIYUN_CLI_ACCESS_KEY_SECRET}" aiyax/certbot-dns-aliyun renew --manual --preferred-challenges dns --non-interactive | grep "Congratulations, all renewals succeeded" && </path/to/deploy-hook.sh>
+
+然后在 crontab 中调用该脚本，并在成功后重启 web 服务：
+```
+# 每5/15/25号3点执行certbot renew，注意替换</path/to/certbot-renew.sh>和</path/to/deploy-hook.sh>
+0 3 5,15,25 * * /path/to/certbot-renew.sh && </path/to/deploy-hook.sh>
 ```
 
 以上的Crontab中的`5,15,25`可以根据需求自行调整，有两点需要考虑：
