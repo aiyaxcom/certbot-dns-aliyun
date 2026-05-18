@@ -92,5 +92,5 @@ docker run --rm --name certbot-dns-aliyun \
 
 关注微信公众号"e界书生"，获取更多有趣分享！
 
-![e界书生](https://aiyax.com/images/ejieshusheng.jpg)
+![e界书生](https://aiyax.com/images/wechat_dy_qr_code.jpg)
 
